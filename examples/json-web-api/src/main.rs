@@ -1,4 +1,4 @@
-use rocket::form::FromForm;
+use rocket::form::{Form,FromForm};
 use rocket::{get, post, serde::json::Json};
 use rocket_okapi::okapi::schemars;
 use rocket_okapi::okapi::schemars::JsonSchema;
@@ -90,6 +90,13 @@ fn create_post_by_query(post: Post) -> Option<Json<Post>> {
     Some(Json(post))
 }
 
+/// Returns the created post.
+#[openapi(tag = "Posts")]
+#[post("/post_by_form", format="multipart/form-data", data="<post>")]
+fn create_post_by_form(post: Form<Post>) -> Option<Json<Post>> {
+    Some(Json(post.into_inner()))
+}
+
 #[rocket::main]
 async fn main() {
     let launch_result = rocket::build()
@@ -102,6 +109,7 @@ async fn main() {
                 create_user,
                 hidden,
                 create_post_by_query,
+                create_post_by_form
             ],
         )
         .mount(

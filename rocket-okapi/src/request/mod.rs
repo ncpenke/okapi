@@ -18,7 +18,7 @@ pub use from_form_multi_param_impls::get_nested_form_parameters;
 pub trait OpenApiFromData<'r>: rocket::data::FromData<'r> {
     /// Return a [`RequestBody`] containing the information required to document the
     /// [`FromData`](rocket::data::FromData) object.
-    fn request_body(gen: &mut OpenApiGenerator) -> Result<RequestBody>;
+    fn request_body(gen: &mut OpenApiGenerator, mime_type: Option<&str>) -> Result<RequestBody>;
 }
 
 /// This trait is used to document a dynamic part of a path that implements

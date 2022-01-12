@@ -141,10 +141,18 @@ fn create_route_operation_fn(
                     compile_error!(concat!("Could not find argument ", #data_param, " matching data param."));
                 }.into()
             };
+            let mime_type = match &route.media_type {
+                Some(m) => {
+                    let s = m.to_string();
+                    quote!(Some(#s))
+                },
+                None => quote!(None)
+            };
+
             // Add parameter to list
             params_names_used.push(data_param.clone());
             quote! {
-                Some(<#ty as ::rocket_okapi::request::OpenApiFromData>::request_body(gen)?.into())
+                Some(<#ty as ::rocket_okapi::request::OpenApiFromData>::request_body(gen, #mime_type)?.into())
             }
         }
         None => quote! { None },
